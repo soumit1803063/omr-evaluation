@@ -97,10 +97,10 @@
             <tbody>
                 {% for row in range(25) %}
                 <tr>
-                    <td>{{ result_data[row]['op'] if row < result_data|length and result_data[row] else 'Not Detected' }}</td>
-                    <td>{{ result_data[row + 25]['op'] if row + 25 < result_data|length and result_data[row + 25] else 'Not Detected' }}</td>
-                    <td>{{ result_data[row + 50]['op'] if row + 50 < result_data|length and result_data[row + 50] else 'Not Detected' }}</td>
-                    <td>{{ result_data[row + 75]['op'] if row + 75 < result_data|length and result_data[row + 75] else 'Not Detected' }}</td>
+                    <td>{{ result_data[row]['op']}}</td>
+                    <td>{{ result_data[row + 25]['op'] }}</td>
+                    <td>{{ result_data[row + 50]['op'] }}</td>
+                    <td>{{ result_data[row + 75]['op'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

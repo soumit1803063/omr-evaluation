@@ -38,24 +38,36 @@ for directory in [
 COLOR_MAP = {
     'a': (255, 0, 0),         # Blue
     'b': (0, 255, 0),         # Green
-    'c': (0, 0, 255),         # Red
+    'c': (0, 50, 255),    
     'd': (255, 255, 0),       # Cyan
     'not answered': (255, 0, 255)  # Magenta
 }
 
 # Utility Functions
-def ensure_model_trained(base_model_path, trained_model_path, data_path):
+def ensure_model_trained(base_model_path, trained_model_path, data_path,option):
     """Ensure the required model is trained."""
     if not is_exist(trained_model_path):
-        segmentation_training_pipeline(
-            base_model_path=base_model_path,
-            trainned_model_path=trained_model_path,
-            data_path=data_path,
-            epochs=EPOCHS,
-            image_size=IMAGE_SIZE,
-            device=DEVICE,
-            patience=PATIENCE
-        )
+        if option == 0:
+            segmentation_training_pipeline(
+                base_model_path=base_model_path,
+                trainned_model_path=trained_model_path,
+                data_path=data_path,
+                epochs=EPOCHS,
+                image_size=IMAGE_SIZE,
+                device=DEVICE,
+                patience=PATIENCE
+            )
+        else:
+            training_pipeline(
+                base_model_path=base_model_path,
+                trainned_model_path=trained_model_path,
+                data_path=data_path,
+                epochs=EPOCHS,
+                image_size=IMAGE_SIZE,
+                device=DEVICE,
+                patience=PATIENCE
+            )
+
 
 def annotate_image(image, result):
     """Annotate the detected answers on the image."""
@@ -95,17 +107,21 @@ def upload_image():
 
     # Ensure models are trained
     ensure_model_trained(
-        SEGMENTATION_BASE_MODEL_PATH, SEGMENTATION_TRAINED_MODEL_PATH, SEGMENTATION_DATA_PATH
+        SEGMENTATION_BASE_MODEL_PATH, SEGMENTATION_TRAINED_MODEL_PATH, SEGMENTATION_DATA_PATH,0
     )
     ensure_model_trained(
-        DETECTION_BASE_MODEL_PATH, DETECTION_TRAINED_MODEL_PATH, DETECTION_DATA_PATH
+        DETECTION_BASE_MODEL_PATH, DETECTION_TRAINED_MODEL_PATH, DETECTION_DATA_PATH,1
     )
+    # tp = "/home/somu/Documents/OMR_Evaluation/result/For Review/Data-2"
 
     # Process image
     uploaded_image = read_image(uploaded_image_path)
+    # cv2.imwrite(os.path.join(tp,"input image.png"), uploaded_image)
     resized_image = resize_image(uploaded_image)
+    # cv2.imwrite(os.path.join(tp,"resized image.png"), resized_image)
     transformed_image = perspective_transformation_pipeline(resized_image,
                                                             SEGMENTATION_TRAINED_MODEL_PATH)
+    # cv2.imwrite(os.path.join(tp,"perspective transformed image.png"), transformed_image)
     transformed_gray_image = to_gray(transformed_image)
 
     # Predict answers
@@ -118,7 +134,8 @@ def upload_image():
     )
 
     # Annotate the image
-    annotated_image = annotate_image(transformed_gray_image, result)
+    annotated_image = annotate_image(transformed_image, result)
+    # cv2.imwrite(os.path.join(tp,"detection image.png"), annotated_image)
 
     # Save the transformed and annotated image
     transformed_image_filename = f"{uuid.uuid4().hex}.jpg"
@@ -129,7 +146,7 @@ def upload_image():
     transformed_image_url = url_for('uploaded_transformed_file', filename=transformed_image_filename)
 
     # Prepare result data for rendering
-    result_data = [{'key': key, 'op': value['op']} for key, value in result.items() if value]
+    result_data = [{'key': key, 'op': value['op'] if value else "Not Detected"} for key, value in result.items()]
 
     return render_template('result.html', image_url=transformed_image_url, result_data=result_data)
 
