@@ -9,6 +9,8 @@ __pycache__/
 runs/
 document-segmentation-v2-2/
 OMR-Scanner-7/
+/static
+
 
 .env
 *.log
