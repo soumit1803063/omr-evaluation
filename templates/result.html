@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processed Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #444;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .result-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .result-table td {
+            background-color: #fafafa;
+        }
+
+        .not-detected {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Processed Results</h1>
+
+        <div class="image-container">
+            <h2>Transformed Image</h2>
+            <img src="{{ image_url }}" alt="Transformed Image">
+        </div>
+
+        <h2>Detected Answers</h2>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>Questions 1-25</th>
+                    <th>Questions 26-50</th>
+                    <th>Questions 51-75</th>
+                    <th>Questions 76-100</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in range(25) %}
+                <tr>
+                    <td>{{ result_data[row]['op'] if row < result_data|length and result_data[row] else 'Not Detected' }}</td>
+                    <td>{{ result_data[row + 25]['op'] if row + 25 < result_data|length and result_data[row + 25] else 'Not Detected' }}</td>
+                    <td>{{ result_data[row + 50]['op'] if row + 50 < result_data|length and result_data[row + 50] else 'Not Detected' }}</td>
+                    <td>{{ result_data[row + 75]['op'] if row + 75 < result_data|length and result_data[row + 75] else 'Not Detected' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Soumit Das &copy; 2024</p>
+    </footer>
+</body>
+</html>
