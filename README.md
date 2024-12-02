@@ -97,7 +97,7 @@ The final result, showing the detected answers on the perspective-transformed OM
 ### Libraries
 Install the required libraries using pip:
 ```bash
-pip install opencv-python ultralytics roboflow
+pip install ultralytics roboflow flask opencv-python scikit-learn
 ```
 
 ## Usage
